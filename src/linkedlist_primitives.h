@@ -7,9 +7,9 @@
 #include <stdbool.h>
 
 
-typedef struct node{
+typedef struct Node{
     char *number;
-    struct elem *next;
+    struct Node *next;
 }Node;
 
 typedef Node * Bucket;
@@ -17,6 +17,9 @@ typedef Node * Bucket;
 
 Bucket initialise(int const taille_max);
 bool is_empty(Bucket b);
+
+const char* head(Bucket b);
+Bucket rest(Bucket b);
 
 Bucket insert_head(Bucket b, char *number);
 Bucket insert_tail(Bucket b, char *number);
