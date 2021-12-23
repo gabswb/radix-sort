@@ -16,21 +16,20 @@ typedef struct Elem{
 
 typedef Element* Bucket;
 
-
-
 Bucket create();
 bool is_empty(const Bucket b);
 
-const char* head(const Bucket b);
+char* head(const Bucket b);
 Bucket rest(const Bucket b);
 
-Bucket insert_head(const Bucket b, const char* numb);
-Bucket insert_tail(Bucket b, const char* numb);
+Bucket insert_head(Bucket b, char* numb);
+Bucket insert_tail(Bucket b, char* numb);
 
 Bucket remove_head(Bucket b);
 Bucket remove_tail(Bucket b);
 
-void print_bucket(Bucket b);
+Bucket delete(Bucket b);
 
+void print_bucket(const Bucket b);
 
 #endif

@@ -1,8 +1,10 @@
 #ifndef DEF_SORT
 #define DEF_SORT
 
-#include "linkedlist_primitives.h"
+#include "bucket.h"
 
-int get_max(Bucket b);//give the maximum size of the numbers in the list
+int max_length(Bucket b);
+
+Bucket sort(int base, Bucket liste);
 
 #endif  

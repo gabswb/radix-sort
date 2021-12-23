@@ -8,7 +8,7 @@ bool is_empty(const Bucket b){
     return b==NULL;
 }
 
-char* head(Bucket b){   
+char* head(const Bucket b){   
     return b->number;
 }
 
@@ -19,11 +19,11 @@ Bucket rest(const Bucket b) {
         return b->next;
 }
 
-Bucket insert_head(const Bucket b, const char* numb){
-    Bucket new = (Bucket) malloc(sizeof(Element));//TODO peut être Element en *new
+Bucket insert_head(Bucket b, char* numb)
+{
+    Bucket new = malloc(sizeof(*new));//TODO peut être Element en *new
 
-    if(new == NULL)
-        exit(EXIT_FAILURE);
+    if(new == NULL) exit(EXIT_FAILURE);
     
     new->number = numb;
     new->next = b;
@@ -31,23 +31,22 @@ Bucket insert_head(const Bucket b, const char* numb){
     return new;
 }
 
-Bucket insert_tail(Bucket b, const char *numb){
+Bucket insert_tail(Bucket b, char *numb){
 
-    Bucket new = (Bucket) malloc(sizeof(Element));
+    Bucket new = malloc(sizeof(*new));  
 
-    if(new == NULL)
-        exit(EXIT_FAILURE);
-        
+    if(new == NULL) exit(EXIT_FAILURE);
+
     new->number = numb;
     new->next = NULL;
 
-    if(is_empty(temp)){
-          l = new;
+    if(is_empty(b)){
+          b = new;
     }
     else{
         Bucket temp = b;
-        while(!is_empty(temp->next)){
-        temp=temp->next;
+        while(!is_empty(rest(temp))){
+        temp=rest(temp);
     }
     temp->next = new;
     }
@@ -58,7 +57,8 @@ Bucket remove_head(Bucket b){
     Bucket new = NULL;
 
     if(!is_empty(b)){
-        new = b->next;
+        new = rest(b);
+        free(head(b));
         free(b);
     }
     return new;
@@ -67,35 +67,49 @@ Bucket remove_head(Bucket b){
 Bucket remove_tail(Bucket b){
     if(!is_empty(b)){
 
-        if(is_empty(b->next)){
+        if(is_empty(rest(b))){
+            free(head(b));
             free(b);
             b=NULL;
         }
         else{
             Bucket temp = b;
-            while(!is_empty(b->next->next)){
-                temp = temp->next;
+            while(!is_empty(rest(rest(b)))){
+                temp = rest(temp);
             }
-            free(temp->next);
+            free(head(temp->next));
+            free(temp->next);//TODO free(rest(temp)) ?
             temp->next = NULL;
         }
     }
     return b;
 }
 
-void print_bucket(Bucket b){
+Bucket delete(Bucket b)
+{
+    if(!is_empty(b)){
+        delete(rest(b));
+        b->next = NULL;
+        free(head(b));
+        free(b);
+    }
+
+    return NULL;
+}
+
+void print_bucket(const Bucket b){
 
     if(is_empty(b)){
-        printf(" *** empty bucket ***")
+        printf(" *** empty bucket *** \n");
     }
     else{
         Bucket temp = b;
 
         printf("[");
-        while(!is_empty(temp)){
-            printf("%s", temp->number);
-            temp = temp->next;
+        while(!is_empty(rest(temp))){
+            printf("%s, ", head(temp));
+            temp = rest(temp);
         }
-        printf("]");
+        printf("%s]\n", head(temp));
     }
 }

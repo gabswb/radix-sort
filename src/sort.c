@@ -1,7 +1,6 @@
 #include "sort.h"
 
-int get_max(Bucket b)
-{
+int max_length(Bucket b){
     if(is_empty(b)){
         return 0;
     }else{
@@ -9,8 +8,18 @@ int get_max(Bucket b)
         int max = strlen(head(b));
         
         while(rest(temp)!=NULL){
-            max = max < strlen(rest(temp)) ? max : strlen(rest(temp));
+            if(max<strlen(head(temp))){//max = max < strlen(head(temp)) ? max : strlen(rest(temp));
+                max = strlen(head(temp));
+            }
             temp=rest(temp);
         }
+        return max;
     }
 }
+
+// Bucket sort(int base, Bucket l){
+//     Bucket liste = l;
+//     int max =  get_max(liste);
+
+//     for()
+// }
