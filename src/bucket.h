@@ -28,6 +28,9 @@ Bucket insert_tail(Bucket b, char* numb);
 Bucket remove_head(Bucket b);
 Bucket remove_tail(Bucket b);
 
+Bucket free_head(Bucket b);
+Bucket free_tail(Bucket b);
+
 Bucket delete(Bucket b);
 
 void print_bucket(const Bucket b);

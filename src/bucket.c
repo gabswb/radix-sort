@@ -53,7 +53,24 @@ Bucket insert_tail(Bucket b, char *numb){
     return b;
 }
 
-Bucket remove_head(Bucket b){
+Bucket remove_head(Bucket b)
+{
+    Bucket new = NULL;
+    
+    if(!is_empty(b)){
+        new = rest(b);
+        free(b);
+    }
+    return new;
+}
+
+Bucket remove_tail(Bucket b)
+{
+    return b;
+}
+
+Bucket free_head(Bucket b)
+{
     Bucket new = NULL;
 
     if(!is_empty(b)){
@@ -64,7 +81,7 @@ Bucket remove_head(Bucket b){
     return new;
 }
 
-Bucket remove_tail(Bucket b){
+Bucket free_tail(Bucket b){
     if(!is_empty(b)){
 
         if(is_empty(rest(b))){
