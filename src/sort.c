@@ -69,6 +69,7 @@ Bucket sort(int base, int max, Bucket l)
         }
         print_bucket(list);
     }
+    free(bucket_list);
     return list;
 }
 
