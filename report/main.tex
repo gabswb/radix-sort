@@ -1,0 +1,376 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{algorithm2e}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{hmargin=2.5cm}
+\lstset{%
+  language=C,
+  basicstyle=\ttfamily\footnotesize,
+}
+
+\SetKwInput{Donnes}{Donées}
+\SetKwInput{Res}{Résultat}
+\SetKwInput{Lexique}{Lexique}
+\SetKwInput{Sortie}{Sorties}
+\SetKw{KwA}{à}
+\SetKw{Retour}{retourner}
+\SetKwBlock{Deb}{début}{fin}
+\SetKwIF{Si}{SinonSi}{Sinon}{si}{alors}{sinon si}{sinon}{fin si}
+\SetKwFor{Tq}{Tant que}{faire}{fintq}
+\SetKwFor{Pour}{Pour}{faire}{finpour}
+\SetKwFor{PourCh}{pour chaque}{faire}{finprch}
+\SetKwFor{PourTous}{pour tous}{faire}{finprts}
+\SetKwRepeat{Repeter}{répéter}{jusqu’à}
+
+\begin{document}
+\hypersetup{pdfborder=0 0 0}
+
+\title{{Rapport projet RN40} \\ 
+[0.3em] 
+\Large Algorithme de tri sur listes chaînées}
+
+\author{Gabriel SCHWAB} 
+\date{Automne 2021}
+
+
+\maketitle
+\vspace*{4cm}
+
+\begin{figure}[h] 
+    \center 
+    \includegraphics[scale=0.5]{utbm_forword-2.jpg} 
+\end{figure}
+\newpage
+\tableofcontents
+\newpage
+\section{Outils et Compilation}
+
+Pour réaliser ce projet j'ai utilisé l'outil de versionning \textbf{Git}. Cet outil m'a permis de pouvoir gérer les différentes versions de mon projet au fur et à mesure que celui-ci a évolué. 
+
+J'ai aussi utilisé \textbf{Valgrind} qui est un outil open-source qui m'a permis de m'assurer que mon programme ne comportait pas de fuites mémoires.
+
+Pour compiler ce projet j'ai choisis d'utiliser \textbf{CMake}. L'avantage de CMake par rapport à d'autres scripts de compilation comme \textbf{makefile} est qu'il permet de générer un script de compilation quelque soit la plateforme utilisée (Windows, Linux, ...). C'est grâce au fichier CMakeLists.txt que le script de compilation va être généré.
+Pour utiliser CMake il faut :
+
+- \href{https://cmake.org/download/}{CMake} 
+
+- \href{https://www.gnu.org/software/make/}{GNU Make} ou d'autres outils comme Ninja ou MinGW Make
+
+- Un compilateur C, j'ai utilisé \href{https://www.mingw-w64.org/}{MinGW 64} 
+
+Pour compiler le project : 
+
+Il est préférable de créer un dossier \lstinline{build} dans le dossier du projet, voici comment procéder :
+
+\begin{lstlisting}
+mkdir build && cd build
+cmake .. -G <generateur>
+make
+\end{lstlisting}
+J'utilise personnellement "MinGW Makefiles" comme générateur.
+Ensuite il suffit d'executer le programme avec les nombres que l'on veut trier passés en paramètre. Par exemple :
+\lstinline{rn40-project 453 22 17 1 321}
+
+
+
+
+
+
+
+\newpage
+
+\section{Type Bucket}
+Tout d'abord, dans ce projet nous manipulons notre propre type abstrait de données, le type Bucket en référence au type "seaux" du sujet. Cependant, il n'y a quasiment aucune différence avec les liste chaînées vues en cours. Les mots seaux et liste seront donc équivalents dans la suite du rapport. La liste de Bucket est codée sous forme d'un tableau de liste chaînée.
+\newline
+
+\subsection{Définition}
+Le type $Bucket$ est un type abstrait équivalent à la structure de donnée liste vue en cours. On note $B$ l'ensemble des $Bucket$. On note $empty\_bucket$ le $Bucket$ vide.
+\newline
+Le type $Bucket$ contient des éléments (nombres) de type $T$, qui dans notre implémentation en C est un chaîne de caractère.
+\newline
+On a donc le type abstrait $Bucket(T)$ qui est définit par les fonctions suivantes : 
+\newline
+\newline
+$create : () \longrightarrow B$, constructeur qui retourne $empty\_bucket$.
+\newline
+\newline
+$head : B\longrightarrow T$, associe au Bucket son premier élément ou $empty\_bucket$ s'il y en a pas.
+\newline
+\newline
+$rest : B \longrightarrow B$, retourne l'élément suivant du Bucket en paramèter ou $empty\_bucket$ s'il n'y en a pas.
+\newline
+\newline
+cons : $ B \times T \longrightarrow B$, modifie le Bucket en lui attachant en tant qu'élément suivant l'élément en paramètre .
+
+
+\subsection{Axiomes}
+
+Soit B l'ensemble des Bucket et T l'ensemble des éléments que chaque Bucket peut contenir.
+\newline
+\newline
+$\forall \; b \in B, \forall \; t \in T$ :
+\newline
+
+$(i)\; head (cons (t, b)) = t$
+\newline
+
+$(ii)\;  rest (cons (t, b)) = b$
+\newline
+
+$(iii) \; cons (t1, b1) = cons (t2, b2) \iff t1 = t2 \; et \; b1 = b2$
+
+\newpage
+\subsection{Opérations}
+
+
+\subsubsection{is\_empty}
+$is\_empty : B \longrightarrow Booléen$, Vrai si Bucket est vide, Faux sinon.
+\newline
+
+\RestyleAlgo{ruled}
+\begin{algorithm}[H]
+\caption{is\_empty}\label{alg:two}
+\Lexique{
+
+- B : Bucket à tester
+
+- R : Vrai si Bucket est vide, Faux sinon}
+\Donnes{B : Bucket}
+\Res{R : Booléen}
+\eSi{B = $empty\_bucket$}{
+    R \gets Vrai\\}{
+    R \gets Faux\\}
+\end{algorithm}
+
+
+\subsubsection{insert\_tail} 
+$insert\_tail : B \times T \longrightarrow B$, insère un élément en queue du Bucket.
+\newline
+
+\RestyleAlgo{ruled}
+\begin{algorithm}[H]
+\caption{insert\_tail}\label{alg:two}
+\Lexique{
+
+- B : Bucket à modifier
+
+- B' : Bucket modifié
+
+- X : Nombre à ajouter}
+\Donnes{B : Bucket, X : T}
+\Res{B' : Bucket}
+B' \gets B\\
+\eSi{is\_empty(B')}{
+    B' \gets create()\\
+    }{
+    \Tq{non(is\_empty(rest(B')))}{
+        B' \gets rest(B')\\
+        }
+        B' \gets cons(B', X)\\
+    } 
+
+\end{algorithm}
+
+\newpage
+\subsubsection{remove\_head} 
+$remove\_head : B \longrightarrow B$, retire l'élément en tête du Bucket.
+\newline
+
+\RestyleAlgo{ruled}
+\begin{algorithm}[H]
+\caption{remove\_head}\label{alg:two}
+\Lexique{
+
+- B : Bucket à modifier
+
+- B' : Bucket modifié
+}
+\Donnes{B : Bucket}
+\Res{B' : Bucket}
+B' \gets B\\
+\Si{non(is\_empty(B'))}{
+    B' \gets rest(B')\\
+    } 
+\end{algorithm}
+
+
+\subsubsection{delete} 
+$ delete : B \longrightarrow B$, supprime le Bucket recursivement et retourne un Bucket vide.
+\newline
+
+\RestyleAlgo{ruled}
+\begin{algorithm}[H]
+\caption{delete}\label{alg:two}
+\Lexique{B : Bucket à supprimer
+}
+\Donnes{B : Bucket}
+\Res{$empty\_bucket$ : Bucket}
+\SetKwFunction{delete}{\textsc{   delete}}
+\Indm\nonl\delete{B}\\
+\Indp
+\Si{non(is\_empty(B))}{
+    delete(rest(B))\\
+    B \gets $emty\_bucket$\\
+}
+\end{algorithm}
+
+\newpage
+\subsubsection{print\_bucket} 
+$print\_bucket$, affiche le Bucket.
+\newline
+
+\RestyleAlgo{ruled}
+\begin{algorithm}[H]
+\caption{print\_bucket}\label{alg:two}
+\Lexique{
+
+-B : Bucket à imprimer
+
+- B' : Bucket temporaire pour parcourir B}
+\Donnes{B : Bucket}
+\Res{}
+\eSi{is\_empty(B)}{
+    print(*** empty bucket ***)}
+    {
+    B' \gets B\\
+    \Tq{non(is\_empty(B'))}{
+        print(head(B'))\\
+        B' \gets rest(B'))\\
+    }
+    }
+\end{algorithm}
+
+\subsubsection{print\_bucket\_list} 
+$ $
+
+\RestyleAlgo{ruled}
+\begin{algorithm}[H]
+\caption{print\_bucket\_list}\label{alg:two}
+\Lexique{
+
+- LB : Liste de bucket
+
+- size : taille de LB
+
+- i : entier qui sert de compteur}
+\Donnes{LB : Liste(Bucket), size : entier}
+\Res{}
+\Pour{i de 0 à size-1}{
+    print\_bucket(LB[i])\\
+    }
+\end{algorithm}
+
+\subsubsection{insert\_bucket\_list}
+$ insert\_bucket\_list$ : permet d'insérer un nombre (élément de type T) dans la liste de Bucket.
+
+
+
+
+
+
+\newpage
+\section{Algorithme de Tri}
+\subsection{Algorithme}
+
+
+\RestyleAlgo{ruled}
+\begin{algorithm}[]
+\caption{Sort}\label{alg:two}
+\Lexique{
+
+- N : la base numérique
+
+- Max : nombre maximum de chiffre parmis les nombres du Bucket
+
+- B : Bucket à trier
+
+- B' : Bucker trié
+
+- LB : Liste de Bucket
+}
+\Donnes{N : Entier, Max : Entier, B : Bucket}
+\Res{B' : Bucket}
+B' \gets B\\
+\Pour{i de 0 à Max-1}{
+    \Tq{$non(is\_empty(B'))$}{
+        j \gets \frac{head(L')}{10_N^i} \pmod{10_N}\\
+        LB[j] \gets insert_tail(LB[j], head(B'))\\
+        B' \gets remove\_head(B')\\
+    }
+    \Pour{k de 0 à N-1}{
+        \Tq{non(is\_empty(LB[k])}{
+            B' \gets insert\_tail(B', head(LB[k])\\
+            LB[k] \gets remove\_head(LB[k])\\
+        }
+    }
+}
+\end{algorithm}
+
+\subsection{Explications}
+Voici la première version de l'algorithme de tri décrite dans le sujet. Cet algorithme est valable dans n'importe quelle base numérique. En effet $\frac{head(B')}{10_N^i}$
+troncature le premier nombre de la liste B' au $i^ème$ chiffre. Ainsi $\frac{valeur(B')}{10_N^i} \pmod{10_N}$ renvoie le $i^ème$ chiffre du premier nombre de B'. On remarque que $10_N$ est le nombre 10 dans la base numérique choisis. En effet 10 en base 2 est égal à 2 en base 10, 10 en base 8 est égal à 8 en base 10 ...
+\newline
+Ensuite on se sert de la valeur de ce $i^ème$ chiffre comme indice pour l'insérer \textbf{en queue} dans le seau correspondant dans la liste de seaux. 
+\newline
+Enfin on retire l'élément de la liste à trier avec $remove\_head()$ ce qui a aussi pour effet de décaler le $2^ème$ élément de la liste à la $1^ère$ place donc pas besoin de faire $B' \gets rest(B')$.
+\newline
+Pour finir, on parcourt la liste de seaux et on retire chaque nombre pour l'ajouter \textbf{en queue} de B'.
+
+Un détail qui est essentiel pour que cet algorithme de tri fonctionne correctemennt est le fait qu'on ajoute \textbf{en queue} à chaque fois qu'on place un nombre dans un seaux ou dans la liste à triée. Cela rend la méthode de tri \textbf{stable}. 
+\newline
+Nous avons choisis d'utiliser un algorithme itératif pour implémenter cette méthode de trie car cela est plus simple pour trier les nombre en partant du chiffre le plus à droite. Si nous devions trier les nombres par la gauche, un algorithme récursif aurait pu être utilisé facilement.
+
+\subsection{Analyse de complexité}
+
+Soit une liste contenant n nombres, ayant chacun au plus k chiffres pouvant prendre dans une base b (pouvant prendre donc b valeurs). Le coût pour remplir la liste de seaux est d'au plus n opérations. Le coût pour vider la liste de seaux et remplir la liste à trier est d'au plus n+b opérations (on parcours obligatoirement b seaux et n nombres). On repète cela k fois ce qui donne un complexité temporelle $O(k(n+b))$.
+\newline
+Comme dans notre cas, d est constant et k = $O(n)$, on en déduit que la complexité de notre algorithme de tri est $O(n)$.
+\newline
+
+Cet algorithme de tri à donc une complexité en temps linéaire ce qui est mieux que la plupart des algorithme de tri par comparaison tel que merge sort ou quicksort qui ont une complexité temporelle quasi linéaire $O(log(n)n)$. Un désavantage pourrai être sa complexité spatiale lorsqu'on travaille avec des bases numériques très grande.
+
+\newpage
+\subsection{Algorithme de Tri adapté}
+
+Pour des raisons de programmation, nous avons apporté quelques modifications à cet algorithme afin de pouvoir l'implémenter en langage C. Comme notre algorithme de tri fonctionne pour une base numérique quelconque, il faut que nous puissions le programmer de cette façon. Ainsi les nombres sont codés sous forme de chaînes de caractère ce qui s'apparente à une liste d'un point de vu algorithmique. Ainsi nous sommes obligés d'appporter quelques modifcations à notre algorithme de départ, notamment une fonction qui ajoute un nombre au bon index de la liste de seaux.
+\newline
+
+Cet alorithme est maintenant même valable pour des chaînes de caractère quelconques et ainsi, il peut donc aussi trier des mots par ordre alphabétique par exemple.
+
+\RestyleAlgo{ruled}
+\begin{algorithm}[]
+\caption{Sort}\label{alg:two}
+\Lexique{
+
+- N : la base numérique
+
+- Max : nombre maximum de chiffre parmis les nombres de lu Bucket
+
+- B : Bucket à trier
+
+- B' : Bucker trié
+
+- LB : Liste de Bucket
+}
+\Donnes{N : Entier, Max : Entier, B : Bucket}
+\Res{B' : Bucket}
+B' \gets B\\
+\Pour{i de Max-1 à 0}{
+    \Tq{$non(is\_empty(B'))$}{
+        insert\_bucket\_list(LB, head(B'), head(B')[i])\\
+        B' \gets remove\_head(B')\\
+    }
+    \Pour{k de 0 à N-1}{
+        \Tq{non(is\_empty(LB[k])}{
+            B' \gets insert\_head(B', head(LB[k])\\
+            LB[k] \gets remove\_head(LB[k])\\
+        }
+    }
+}
+\end{algorithm}
+
+\end{document}

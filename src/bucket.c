@@ -28,7 +28,7 @@ bool is_empty(const Bucket b)
  * @param b liste
  * @return char* valeur contenue par l'Element qui correspond au nombre
  */
-char* head(const Bucket b)
+char* value(const Bucket b)
 {   
     return b->number;
 }
@@ -45,24 +45,6 @@ Bucket rest(const Bucket b)
         return NULL;
     else
         return b->next;
-}
-
-/**
- * @brief insere en tête de la liste un Element contenant la chaine de caractère passée en paramètre
- * 
- * @param b ancienne liste dans laquelle on doit insérer un element
- * @param numb chaine de caractère 
- * @return Bucket est une nouvelle liste avec l'Element inséré en tête et l'ancienne liste
- */
-Bucket insert_head(Bucket b, char* numb)
-{
-    Bucket new = malloc(sizeof(*new)); /** on utilise sizeof(*new) et non sizeof(Element) comme ça si on change le type de new on a pas besoin de modifié aussi l'appel à malloc **/
-    if(new == NULL) exit(EXIT_FAILURE);
-    
-    new->number = numb;
-    new->next = b;
-
-    return new;
 }
 
 /**
@@ -111,43 +93,6 @@ Bucket remove_head(Bucket b)
     return new;
 }
 
-// Bucket remove_tail(Bucket b)
-// {
-//     return b;
-// }
-
-// Bucket free_head(Bucket b)
-// {
-//     Bucket new = NULL;
-
-//     if(!is_empty(b)){
-//         new = rest(b);
-//         free(head(b));
-//         free(b);
-//     }
-//     return new;
-// }
-
-// Bucket free_tail(Bucket b){
-//     if(!is_empty(b)){
-
-//         if(is_empty(rest(b))){
-//             free(head(b));
-//             free(b);
-//             b=NULL;
-//         }
-//         else{
-//             Bucket temp = b;
-//             while(!is_empty(rest(rest(b)))){
-//                 temp = rest(temp);
-//             }
-//             free(head(temp->next));
-//             free(temp->next);//TODO free(rest(temp)) ?
-//             temp->next = NULL;
-//         }
-//     }
-//     return b;
-// }
 
 /**
  * @brief supprime la liste c'est à dire tous ces éléments et libère aussi la mémoire allouée 
@@ -161,7 +106,7 @@ Bucket delete(Bucket b)
     if(!is_empty(b)){
         delete(rest(b));
         b->next = NULL;
-        free(head(b));
+        free(value(b));
         free(b);
     }
 
@@ -184,10 +129,10 @@ void print_bucket(const Bucket b)
 
         printf("[");
         while(!is_empty(rest(temp))){
-            printf("%s, ", head(temp));
+            printf("%s, ", value(temp));
             temp = rest(temp);
         }
-        printf("%s]\n", head(temp));
+        printf("%s]\n", value(temp));
     }
 }
 
@@ -206,3 +151,4 @@ void print_bucket_list(const Bucket* bl, int length)
     }
     printf("\n\n");
 }
+

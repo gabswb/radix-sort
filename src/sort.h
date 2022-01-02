@@ -10,6 +10,6 @@ char* format_number(int nb_of_0, char* old_nb);
 
 Bucket sort(int base, int max, Bucket liste);
 
-void insert_bucket_list(Bucket* bucket_list, Bucket list, char position);
+void insert_bucket_list(Bucket* bucket_list, char* value, char position);
 
 #endif  

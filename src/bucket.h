@@ -23,17 +23,12 @@ typedef Element* Bucket;
 Bucket create();
 bool is_empty(const Bucket b);
 
-char* head(const Bucket b);
+char* value(const Bucket b);
 Bucket rest(const Bucket b);
 
-Bucket insert_head(Bucket b, char* numb);
 Bucket insert_tail(Bucket b, char* numb);
 
 Bucket remove_head(Bucket b);
-Bucket remove_tail(Bucket b);
-
-Bucket free_head(Bucket b);
-Bucket free_tail(Bucket b);
 
 Bucket delete(Bucket b);
 

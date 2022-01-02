@@ -62,13 +62,13 @@ Bucket sort(int base, int max, Bucket l)
 
     for(int i = max-1; i>=0; i--){
         while(!is_empty(list)){
-            insert_bucket_list(bucket_list, list, head(list)[i]);                
-            list = remove_head(list);    
+            insert_bucket_list(bucket_list, value(list), value(list)[i]); // on ne peut pas utliser directement le ième chiffre de l'élément               
+            list = remove_head(list);                                     // de la liste en tant qu'indice car celui ci est un caractère. Donc on utilise une fonction pour l'insérer.
         }
         //print_bucket_list(bucket_list, base); //Décommenter cette ligne pour pouvoir voir les différentes étapes                                                  
         for(int j = 0; j<base;j++){
             while(!is_empty(bucket_list[j])){
-                list = insert_tail(list, head(bucket_list[j]));
+                list = insert_tail(list, value(bucket_list[j]));
                 bucket_list[j] = remove_head(bucket_list[j]);
             }
         }
@@ -81,66 +81,66 @@ Bucket sort(int base, int max, Bucket l)
  * @brief insert le nombre ième nombre de la liste dans la liste des seaux
  * 
  * @param bucket_list liste des seaux
- * @param list liste de nombres
+ * @param value valeur à insérer
  * @param position position du ième nombre à insérer
  */
-void insert_bucket_list(Bucket* bucket_list, Bucket list, char position)
+void insert_bucket_list(Bucket* bucket_list, char* value, char position)
 {
     switch(position)
     {
         case '0':
-            bucket_list[0] = insert_tail(bucket_list[0], head(list));
+            bucket_list[0] = insert_tail(bucket_list[0], value);
             break;
         case '1':
-            bucket_list[1] = insert_tail(bucket_list[1], head(list));
+            bucket_list[1] = insert_tail(bucket_list[1], value);
             break;
         case '2':
-            bucket_list[2] = insert_tail(bucket_list[2], head(list));
+            bucket_list[2] = insert_tail(bucket_list[2], value);
             break;
         case '3':
-            bucket_list[3] = insert_tail(bucket_list[3], head(list));
+            bucket_list[3] = insert_tail(bucket_list[3], value);
             break;
         case '4':
-            bucket_list[4] = insert_tail(bucket_list[4], head(list));
+            bucket_list[4] = insert_tail(bucket_list[4], value);
             break;
         case '5':
-            bucket_list[5] = insert_tail(bucket_list[5], head(list));
+            bucket_list[5] = insert_tail(bucket_list[5], value);
             break;
         case '6':
-            bucket_list[6] = insert_tail(bucket_list[6], head(list));
+            bucket_list[6] = insert_tail(bucket_list[6], value);
             break;
         case '7':
-            bucket_list[7] = insert_tail(bucket_list[7], head(list));
+            bucket_list[7] = insert_tail(bucket_list[7], value);
             break;
         case '8':
-            bucket_list[8] = insert_tail(bucket_list[8], head(list));
+            bucket_list[8] = insert_tail(bucket_list[8], value);
             break;
         case '9':
-            bucket_list[9] = insert_tail(bucket_list[9], head(list));
+            bucket_list[9] = insert_tail(bucket_list[9], value);
             break;
         case 'a':
         case 'A':
-            bucket_list[10] = insert_tail(bucket_list[10], head(list));
+            bucket_list[10] = insert_tail(bucket_list[10], value);
             break;
         case 'b':
         case 'B':
-            bucket_list[11] = insert_tail(bucket_list[11], head(list));
+            bucket_list[11] = insert_tail(bucket_list[11], value);
             break;
         case 'c':
         case 'C':
-            bucket_list[12] = insert_tail(bucket_list[12], head(list));
+            bucket_list[12] = insert_tail(bucket_list[12], value);
             break;
         case 'd':
         case 'D':
-            bucket_list[13] = insert_tail(bucket_list[13], head(list));
+            bucket_list[13] = insert_tail(bucket_list[13], value);
             break;
         case 'e':
         case 'E':
-            bucket_list[14] = insert_tail(bucket_list[14], head(list));
+            bucket_list[14] = insert_tail(bucket_list[14], value);
             break;
         case 'f':
         case 'F':
-            bucket_list[15] = insert_tail(bucket_list[15], head(list));
+            bucket_list[15] = insert_tail(bucket_list[15], value);
             break;
         default:
             exit(EXIT_FAILURE);

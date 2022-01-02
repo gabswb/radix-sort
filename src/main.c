@@ -35,4 +35,4 @@ int main(int argc, char* argv[])
     list = delete(list);
 
     return 0;
-}
+} 
