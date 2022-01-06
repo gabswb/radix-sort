@@ -3,10 +3,12 @@ Project for the course of algorithmics and data structure (RN40) that performs a
 
 to compile this project: 
  - mkdir build && cd buil
- - cmake .. -G "<generator>"
+ - cmake .. -G "generator"
  - make 
 
- then run the project with the list of number as parameter :
-  - rn40-project 431 e46 24b3 7 31
+generator should be for exemple MinGW Makefiles or Ninja ...
+
+then run the project with the list of number as parameter :
+ - rn40-project 431 e46 24b3 7 31
   
  
