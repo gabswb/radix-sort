@@ -1,4 +1,4 @@
-# rn40-sort
+# rn40-radix-sort
 Project for the course of algorithmics and data structure (RN40) that performs a radix sort on linked lists of numbers of any base.
 
 to compile this project: 
