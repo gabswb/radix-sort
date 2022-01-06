@@ -8,7 +8,7 @@ to compile this project:
 
 generator should be for exemple MinGW Makefiles or Ninja ...
 
-then run the project with the list of number as parameter :
+then run the project with the list of number as arguments :
  - rn40-project 431 e46 24b3 7 31
   
  
